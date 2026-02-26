@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的服务器 · 控制中心</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖥️</text></svg>">
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --success: #10b981;
+    }
+
+    .dark {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --border-color: #334155;
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.3s, color 0.3s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部导航 */
+    nav {
+      background: var(--bg-secondary);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), #7c3aed);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      position: relative;
+      padding: 0.4rem 0;
+    }
+
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    /* 主内容区 */
+    main {
+      flex: 1;
+      padding: 2rem 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+    }
+
+    /* Dashboard */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      padding: 1.2rem;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0.4rem 0;
+      color: var(--accent);
+    }
+
+    /* Services */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .service-card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 1.2rem 0.8rem;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .service-card a {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: 2rem;
+    }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .nav-links {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body class="light">
+
+  <!-- 顶部导航 -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo">🖥️ 我的服务器</div>
+      <ul class="nav-links">
+        <li><a href="#" class="nav-link active" data-page="dashboard">首页</a></li>
+        <li><a href="#" class="nav-link" data-page="services">服务</a></li>
+        <li><a href="#" class="nav-link" data-page="status">系统状态</a></li>
+        <li><a href="#" class="nav-link" data-page="docs">帮助</a></li>
+        <li><a href="#" class="nav-link" data-page="about">关于</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle">🌓</button>
+    </div>
+  </nav>
+
+  <!-- 主内容区 -->
+  <main>
+    <!-- 首页 -->
+    <section id="dashboard" class="page active">
+      <h2>欢迎回来！</h2>
+      <p>这里是你的私有服务器控制中心，快速访问所有服务。</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div>CPU 使用率</div>
+          <div class="stat-value">32%</div>
+        </div>
+        <div class="stat-card">
+          <div>内存使用</div>
+          <div class="stat-value">5.2 GB</div>
+        </div>
+        <div class="stat-card">
+          <div>磁盘占用</div>
+          <div class="stat-value">68%</div>
+        </div>
+        <div class="stat-card">
+          <div>Docker 容器</div>
+          <div class="stat-value">12</div>
+        </div>
+      </div>
+
+      <h3>常用服务</h3>
+      <div class="services-grid quick-access">
+        <div class="service-card"><a href="http://你的IP:8080" target="_blank">Portainer</a></div>
+        <div class="service-card"><a href="http://你的IP:3000" target="_blank">Grafana</a></div>
+        <div class="service-card"><a href="http://你的IP:8000" target="_blank">文件管理</a></div>
+        <div class="service-card"><a href="http://你的IP:8123" target="_blank">Home Assistant</a></div>
+      </div>
+    </section>
+
+    <!-- 服务列表 -->
+    <section id="services" class="page">
+      <h2>所有服务</h2>
+      <p>点击图标快速跳转到对应服务（请替换为你的实际地址）。</p>
+      <div class="services-grid">
+        <div class="service-card"><a href="http://你的IP:8080" target="_blank">Portainer</a></div>
+        <div class="service-card"><a href="http://你的IP:3000" target="_blank">Grafana</a></div>
+        <div class="service-card"><a href="http://你的IP:9090" target="_blank">Prometheus</a></div>
+        <div class="service-card"><a href="http://你的IP:5055" target="_blank">Watchtower</a></div>
+        <div class="service-card"><a href="http://你的IP:8000" target="_blank">File Browser</a></div>
+        <div class="service-card"><a href="http://你的IP:7878" target="_blank">Radarr</a></div>
+        <div class="service-card"><a href="http://你的IP:8989" target="_blank">Sonarr</a></div>
+        <div class="service-card"><a href="http://你的IP:9117" target="_blank">Jackett</a></div>
+        <div class="service-card"><a href="http://你的IP:8123" target="_blank">Home Assistant</a></div>
+        <div class="service-card"><a href="http://你的IP:5000" target="_blank">NAS 管理</a></div>
+        <div class="service-card"><a href="http://你的IP:32400" target="_blank">Plex</a></div>
+        <div class="service-card"><a href="http://你的IP:8096" target="_blank">Jellyfin</a></div>
+      </div>
+    </section>
+
+    <!-- 系统状态 -->
+    <section id="status" class="page">
+      <h2>系统状态</h2>
+      <p>当前服务器资源使用情况（模拟数据，可对接 Node Exporter + Prometheus）。</p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div>系统运行时间</div>
+          <div class="stat-value">23 天</div>
+        </div>
+        <div class="stat-card">
+          <div>负载平均值</div>
+          <div class="stat-value">0.42</div>
+        </div>
+        <div class="stat-card">
+          <div>网络上传</div>
+          <div class="stat-value">12.4 MB/s</div>
+        </div>
+        <div class="stat-card">
+          <div>网络下载</div>
+          <div class="stat-value">8.7 MB/s</div>
+        </div>
+      </div>
+      <p style="margin-top: 1.5rem; color: var(--text-secondary);">
+        💡 提示：可通过部署 <code>node_exporter</code> + <code>prometheus</code> + <code>grafana</code> 实现真实监控。
+      </p>
+    </section>
+
+    <!-- 帮助文档 -->
+    <section id="docs" class="page">
+      <h2>使用帮助</h2>
+      <ul style="line-height: 2; margin: 1.5rem 0; padding-left: 1.5rem;">
+        <li>✅ 所有链接请替换为你的实际 IP 或域名（如 <code>http://192.168.1.100:8080</code>）</li>
+        <li>🔒 对外网开放前，请务必配置 HTTPS 和身份认证（推荐 Authelia 或 Nginx Basic Auth）</li>
+        <li>🔄 如需自动发现 Docker 服务，可集成 <code>heimdall</code> 或编写脚本读取 Docker API</li>
+        <li>🎨 主题切换按钮位于右上角，支持暗色/亮色模式</li>
+      </ul>
+      <h3>推荐工具栈</h3>
+      <ul style="line-height: 2; margin: 1rem 0; padding-left: 1.5rem;">
+        <li>反向代理：Nginx Proxy Manager / Traefik</li>
+        <li>认证网关：Authelia</li>
+        <li>监控：Prometheus + Grafana + Node Exporter</li>
+        <li>自动化：Watchtower（自动更新容器）</li>
+      </ul>
+    </section>
+
+    <!-- 关于 -->
+    <section id="about" class="page">
+      <h2>关于本面板</h2>
+      <p style="margin: 1.5rem 0;">
+        这是一个轻量级、无依赖的自建服务器首页，专为家庭实验室（Home Lab）或个人 NAS 设计。
+      </p>
+      <p>
+        ✨ 特性：多页面导航、主题切换、响应式布局、交互动画、预留 API 扩展接口。
+      </p>
+      <p style="margin-top: 1.5rem; color: var(--text-secondary);">
+        开源精神 · 私有优先 · 安全第一
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 我的私有服务器 · 请勿公开敏感地址
+  </footer>
+
+  <script>
+    // 页面切换逻辑
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const pageId = this.getAttribute('data-page');
+        
+        // 更新激活状态
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+        
+        // 显示对应页面
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+      });
+    });
+
+    // 主题切换
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    if (savedTheme === 'dark') {
+      body.classList.add('dark');
+      themeToggle.textContent = '🌞';
+    } else {
+      themeToggle.textContent = '🌓';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      const isDark = body.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      themeToggle.textContent = isDark ? '🌞' : '🌓';
+    });
+  </script>
+</body>
+</html>
