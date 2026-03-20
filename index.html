@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的炫酷个人主页</title>
+    <style>
+        /* ==============================
+           1. 基础样式与渐变背景
+           ============================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* 绚丽的渐变背景 */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            /* 动画：让背景缓缓流动 */
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden; /* 隐藏滚动条 */
+        }
+
+        /* 渐变背景动画定义 */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ==============================
+           2. 毛玻璃（Glassmorphism）卡片
+           ============================== */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1); /* 半透明白色背景 */
+            backdrop-filter: blur(15px); /* 关键：毛玻璃模糊效果 */
+            -webkit-backdrop-filter: blur(15px); /* 兼容 Safari */
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* 柔和阴影 */
+            border: 1px solid rgba(255, 255, 255, 0.18); /* 微弱的边框描边 */
+            
+            /* 入场动画：向下滑入并淡出 */
+            animation: slideInDown 1s ease-out;
+        }
+
+        /* 头像样式 */
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            margin-bottom: 1.2rem;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            /* 鼠标悬停时的旋转动画 */
+            transition: transform 0.5s ease;
+        }
+        
+        .avatar:hover {
+            transform: rotate(360deg);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2); /* 提升文字清晰度 */
+        }
+
+        p.bio {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ==============================
+           3. 互动链接列表与动画
+           ============================== */
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            
+            /* 交互过渡效果 */
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 链接悬停效果：背景变亮、向上微动、增加阴影 */
+        .link-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* 联系邮件样式（次要按钮） */
+        .link-item.secondary {
+            background: rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+        
+        .link-item.secondary:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* ==============================
+           4. 动画定义
+           ============================== */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ==============================
+           5. 响应式与页脚
+           ============================== */
+        footer {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-card">
+        <img src="芙芙.jpg" alt="个性头像" class="avatar">
+        
+        <h1>晚雾安</h1>
+        <p class="bio">✨ 正在探索网络世界的创意开发者 ✨</p>
+
+        <div class="links">
+            <a href="https://www.wanwuan.top/blog" class="link-item" target="_blank">📖 阅读我的博客</a>
+            <a href="https://www.wanwuan.top/blog/article.html" class="link-item" target="_blank">🛠️ 查看项目作品</a>
+            <a href="https://www.wanwuan.top/blog/about.html" class="link-item" target="_blank">👋 关于我</a>
+            
+            <a href="https://github.com/Wan-Wuan" target="_blank" class="link-item secondary">🐱 GitHub</a>
+            <a href="mailto:wuanwan86@gmail.com" class="link-item secondary">📧 联系邮件</a>
+        </div>
+
+        <footer>
+            © 2026 wanwuan | 精彩从这里开始
+        </footer>
+    </div>
+
+</body>
+</html>
