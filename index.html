@@ -3,174 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的炫酷个人主页</title>
+    <title>探索我的世界 | 个人主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ==============================
-           1. 基础样式与渐变背景
-           ============================== */
+        :root {
+            --primary-color: #ffffff;
+            --accent-color: #00f2fe;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            cursor: default;
         }
 
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            color: white;
+            font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            /* 绚丽的渐变背景 */
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background: #0f0c29; /* 深色底色备用 */
+            /* 更加深邃的极光渐变 */
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0575E6);
             background-size: 400% 400%;
-            /* 动画：让背景缓缓流动 */
-            animation: gradientBG 15s ease infinite;
-            overflow: hidden; /* 隐藏滚动条 */
+            animation: gradientMove 10s ease infinite;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* 渐变背景动画定义 */
-        @keyframes gradientBG {
+        @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* ==============================
-           2. 毛玻璃（Glassmorphism）卡片
-           ============================== */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1); /* 半透明白色背景 */
-            backdrop-filter: blur(15px); /* 关键：毛玻璃模糊效果 */
-            -webkit-backdrop-filter: blur(15px); /* 兼容 Safari */
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-            max-width: 420px;
-            width: 90%;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* 柔和阴影 */
-            border: 1px solid rgba(255, 255, 255, 0.18); /* 微弱的边框描边 */
-            
-            /* 入场动画：向下滑入并淡出 */
-            animation: slideInDown 1s ease-out;
-        }
-
-        /* 头像样式 */
-        .avatar {
-            width: 110px;
-            height: 110px;
+        /* 背景漂浮装饰球 */
+        .circle {
+            position: absolute;
             border-radius: 50%;
-            margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0));
+            backdrop-filter: blur(5px);
+            z-index: 0;
+            animation: float 20s infinite linear;
+        }
+        .c1 { width: 300px; height: 300px; top: -10%; left: -10%; }
+        .c2 { width: 200px; height: 200px; bottom: -5%; right: 10%; animation-duration: 15s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(30px, 50px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        /* 毛玻璃容器 */
+        .main-card {
+            position: relative;
+            z-index: 10;
+            width: 450px;
+            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            text-align: center;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        /* 3D 悬浮微动感 */
+        .main-card:hover {
+            transform: translateY(-10px) rotateX(2deg) rotateY(2deg);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
             object-fit: cover;
-            border: 4px solid rgba(255, 255, 255, 0.6);
-            /* 鼠标悬停时的旋转动画 */
-            transition: transform 0.5s ease;
-        }
-        
-        .avatar:hover {
-            transform: rotate(360deg);
+            border: 3px solid var(--accent-color);
+            padding: 5px;
+            transition: 0.5s;
         }
 
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2); /* 提升文字清晰度 */
+        /* 在线状态点 */
+        .status-dot {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: #4cd137;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
 
-        p.bio {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1rem;
-            margin-bottom: 2rem;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 209, 55, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 209, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 209, 55, 0); }
         }
 
-        /* ==============================
-           3. 互动链接列表与动画
-           ============================== */
-        .links {
+        h1 { font-size: 2rem; letter-spacing: 2px; margin-bottom: 10px; }
+        .typing-text { font-size: 0.9rem; color: var(--accent-color); font-weight: bold; margin-bottom: 20px; }
+
+        /* 技能标签排版 */
+        .tags {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 导航按钮列表 */
+        .nav-links {
+            display: grid;
             gap: 15px;
         }
 
-        .link-item {
+        .nav-btn {
+            text-decoration: none;
+            color: white;
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: var(--accent-color);
+            padding-left: 20px; /* 侧滑效果 */
+        }
+
+        .nav-btn i { font-size: 1.2rem; }
+
+        /* 社交媒体小图标 */
+        .social-icons {
+            margin-top: 30px;
+            display: flex;
             justify-content: center;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.15);
+            gap: 20px;
+        }
+
+        .social-icons a {
             color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 500;
-            
-            /* 交互过渡效果 */
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.5rem;
+            opacity: 0.7;
+            transition: 0.3s;
         }
 
-        /* 链接悬停效果：背景变亮、向上微动、增加阴影 */
-        .link-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-4px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        /* 联系邮件样式（次要按钮） */
-        .link-item.secondary {
-            background: rgba(0, 0, 0, 0.2);
-            margin-top: 10px;
-        }
-        
-        .link-item.secondary:hover {
-            background: rgba(0, 0, 0, 0.4);
+        .social-icons a:hover {
+            opacity: 1;
+            transform: scale(1.2);
+            color: var(--accent-color);
         }
 
-        /* ==============================
-           4. 动画定义
-           ============================== */
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ==============================
-           5. 响应式与页脚
-           ============================== */
-        footer {
-            margin-top: 2.5rem;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
     </style>
 </head>
 <body>
 
-    <div class="glass-card">
-        <img src="芙芙.jpg" alt="个性头像" class="avatar">
-        
-        <h1>晚雾安</h1>
-        <p class="bio">✨ 正在探索网络世界的创意开发者 ✨</p>
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
 
-        <div class="links">
-            <a href="https://www.wanwuan.top/blog" class="link-item" target="_blank">📖 阅读我的博客</a>
-            <a href="https://www.wanwuan.top/blog/article.html" class="link-item" target="_blank">🛠️ 查看项目作品</a>
-            <a href="https://www.wanwuan.top/blog/about.html" class="link-item" target="_blank">👋 关于我</a>
-            
-            <a href="https://github.com/Wan-Wuan" target="_blank" class="link-item secondary">🐱 GitHub</a>
-            <a href="mailto:wuanwan86@gmail.com" class="link-item secondary">📧 联系邮件</a>
+    <div class="main-card">
+        <div class="avatar-wrapper">
+            <img src="芙芙.jpg" alt="Avatar" class="avatar">
+            <div class="status-dot"></div>
         </div>
 
-        <footer>
-            © 2026 wanwuan | 精彩从这里开始
-        </footer>
+        <h1>晚雾安</h1>
+        <div class="typing-text">探索中... 🛸 | 代码、设计与星辰</div>
+
+        <div class="tags">
+            <span class="tag"># Python</span>
+            <span class="tag"># UI/UX</span>
+            <span class="tag"># 旅行爱好者</span>
+        </div>
+
+        <nav class="nav-links">
+            <a href="https://www.wanwuan.top/blog" class="nav-btn" target="_blank">
+                <span><i class="fas fa-terminal"></i> 实验室 (Lab)</span>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            <a href="https://www.wanwuan.top/blog/article.html" class="nav-btn" target="_blank"> 
+                <span><i class="fas fa-feather-alt"></i> 随笔 (Thoughts)</span>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            <a href="https://www.wanwuan.top/pay.jpg" class="nav-btn" target="_blank">
+                <span><i class="fas fa-coffee"></i> 赞助我一杯咖啡吧，球球了</span>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </nav>
+
+        <div class="social-icons">
+            <a href="https://github.com/Wan-Wuan" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://weixin.qq.com/" target="_blank><i class="fab fa-weixin"></i></a>
+            <a href="#"><i class="fab fa-twitter" ></i></a>
+            <a href="https://wuanwan86@gmail.com" target="_blank><i class="fas fa-envelope"></i></a>
+        </div>
     </div>
 
 </body>
